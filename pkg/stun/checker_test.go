@@ -45,8 +45,7 @@ func (o *testObserver) OnNatTypeChanged(natType NatType) {
 
 func TestNewChecker2(t *testing.T) {
 	ctx := context.Background()
-	// stunServer := "stun.syncthing.net:3478"
-	stunServer := "114.55.134.60:3478"
+	stunServer := "stun.syncthing.net:3478"
 	enableNatCheck := true
 	checker := NewChecker(ctx, stunServer, enableNatCheck, &testObserver{t: t})
 	require.NotNil(t, checker)
