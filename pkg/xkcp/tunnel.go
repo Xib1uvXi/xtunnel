@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	scavengettl    = 60 * 60
+	scavengettl    = 30 * 60
 	scavengePeriod = 5
 )
 
@@ -45,6 +45,8 @@ func NewTunnel(proxyTarget string) *Tunnel {
 		chScavenger: make(chan timedSession, 128),
 		proxyTarget: proxyTarget,
 	}
+
+	go tunnel.scavenger()
 
 	return tunnel
 }
