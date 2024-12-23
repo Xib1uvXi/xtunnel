@@ -67,9 +67,14 @@ func (k *Tunnel) FindPort(target string) (int, bool) {
 	return port, ok
 }
 
-func (k *Tunnel) OnNewConn(target string, conn *smux.Session) {
+func (k *Tunnel) OnNewConn(target string, conn *smux.Session, isServer bool) {
 	k.locker.Lock()
 	defer k.locker.Unlock()
+
+	if isServer {
+		go k.handleOut(target, conn)
+		return
+	}
 
 	tcpListen, err := net.ListenTCP("tcp", nil)
 	if err != nil {
@@ -80,7 +85,7 @@ func (k *Tunnel) OnNewConn(target string, conn *smux.Session) {
 	tcpListenPort := tcpListen.Addr().(*net.TCPAddr).Port
 
 	ctx, cancel := context.WithCancel(k.ctx)
-	go k.handleOut(target, conn)
+
 	go k.handleIn(target, tcpListen, conn)
 
 	k.portMap[target] = tcpListenPort
@@ -170,7 +175,7 @@ func (k *Tunnel) handleOut(target string, mux *smux.Session) {
 			var p2 net.Conn
 			var err error
 
-			p2, err = net.Dial("tcp", k.proxyTarget)
+			p2, err = net.DialTimeout("tcp", k.proxyTarget, 5*time.Second)
 			if err != nil {
 				log.Errorf("dial to ProxyTarget error: %v", err)
 				p1.Close()
@@ -180,14 +185,8 @@ func (k *Tunnel) handleOut(target string, mux *smux.Session) {
 			defer p1.Close()
 			defer p2.Close()
 
-			select {
-			case <-p1.GetDieCh():
-				return
-			default:
-			}
-
 			var s1, s2 io.ReadWriteCloser = p1, p2
-			err1, err2 := std.Pipe(s1, s2, 1)
+			err1, err2 := std.Pipe(s1, s2, 30)
 			if err1 != nil && err1 != io.EOF {
 				log.Debugf("pipe error: %v, in: %s", err1, target)
 			}

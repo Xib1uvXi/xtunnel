@@ -8,7 +8,7 @@ import (
 )
 
 type NewConnObserver interface {
-	OnNewConn(target string, conn *smux.Session)
+	OnNewConn(target string, conn *smux.Session, isServer bool)
 }
 
 type ConnectRequest struct {
@@ -29,9 +29,9 @@ func NewConnBuilder() *ConnBuilder {
 }
 
 // notify new connection connect success
-func (b *ConnBuilder) notifyNewConn(target string, conn *smux.Session) {
+func (b *ConnBuilder) notifyNewConn(target string, conn *smux.Session, isServer bool) {
 	for _, observer := range b.observers {
-		observer.OnNewConn(target, conn)
+		observer.OnNewConn(target, conn, isServer)
 	}
 }
 
@@ -47,6 +47,7 @@ func (b *ConnBuilder) Build(kcpConf *Config, target string, req *ConnectRequest)
 	defer b.uniqueFilter.Delete(target)
 
 	var smuxSession *smux.Session
+	var isServer bool
 
 	if req.IsActive {
 		kcpConn, err := BuildClientKCP(kcpConf, fmt.Sprintf(":%d", req.LocalPort), fmt.Sprintf("%s:%d", req.RemoteAddr, req.RemotePort))
@@ -61,6 +62,8 @@ func (b *ConnBuilder) Build(kcpConf *Config, target string, req *ConnectRequest)
 			return err
 		}
 
+		isServer = false
+
 	} else {
 		kcpConn, err := BuildServerKCP(kcpConf, fmt.Sprintf(":%d", req.LocalPort))
 		if err != nil {
@@ -73,8 +76,10 @@ func (b *ConnBuilder) Build(kcpConf *Config, target string, req *ConnectRequest)
 			log.Errorf("build smux session error: %v", err)
 			return err
 		}
+
+		isServer = true
 	}
 
-	b.notifyNewConn(target, smuxSession)
+	b.notifyNewConn(target, smuxSession, isServer)
 	return nil
 }
