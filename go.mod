@@ -32,7 +32,7 @@ require (
 	github.com/templexxx/xorsimd v0.4.3 // indirect
 	github.com/tjfoc/gmsm v1.4.1 // indirect
 	github.com/wlynxg/anet v0.0.5 // indirect
-	github.com/xtaci/qpp v1.1.18 // indirect
+	github.com/xtaci/qpp v1.1.17 // indirect
 	github.com/xtaci/tcpraw v1.2.31 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/net v0.33.0 // indirect
