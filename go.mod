@@ -11,8 +11,8 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.10.0
 	github.com/xtaci/kcp-go/v5 v5.6.18
-	github.com/xtaci/kcptun v0.0.0-20241216120818-6ebdb40f659b
-	github.com/xtaci/smux v1.5.32
+	github.com/xtaci/kcptun v0.0.0-20241227142705-863833353cfb
+	github.com/xtaci/smux v1.5.33
 	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.31.0
 )
@@ -32,7 +32,7 @@ require (
 	github.com/templexxx/xorsimd v0.4.3 // indirect
 	github.com/tjfoc/gmsm v1.4.1 // indirect
 	github.com/wlynxg/anet v0.0.5 // indirect
-	github.com/xtaci/qpp v1.1.17 // indirect
+	github.com/xtaci/qpp v1.1.18 // indirect
 	github.com/xtaci/tcpraw v1.2.31 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/net v0.33.0 // indirect
