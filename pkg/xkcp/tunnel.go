@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	scavengettl    = 30 * 60
+	scavengettl    = 60 * 60 * 2
 	scavengePeriod = 5
 )
 
